@@ -5,6 +5,7 @@ import com.dizio1.fittracker.auth.exception.DuplicateMailException;
 import com.dizio1.fittracker.auth.exception.DuplicateUsernameException;
 import com.dizio1.fittracker.auth.dto.AuthResponse;
 import com.dizio1.fittracker.auth.dto.RegisterRequest;
+import com.dizio1.fittracker.auth.exception.PasswordMissmatchException;
 import com.dizio1.fittracker.security.service.JwtTokenService;
 import com.dizio1.fittracker.user.entity.UserRole;
 import com.dizio1.fittracker.user.repository.UserRepository;
@@ -34,6 +35,10 @@ public class RegisterService {
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) throw new DuplicateUsernameException(request.username());
         if (userRepository.existsByEmail(request.email())) throw new DuplicateMailException(request.email());
+
+        if(!request.password().equals(request.confirmPassword())) {
+            throw new PasswordMissmatchException();
+        }
 
         User user = new User();
         user.setUsername(request.username());
