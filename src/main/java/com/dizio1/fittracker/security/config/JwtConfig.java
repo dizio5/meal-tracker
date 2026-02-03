@@ -1,4 +1,4 @@
-package com.dizio1.fittracker.security;
+package com.dizio1.fittracker.security.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
