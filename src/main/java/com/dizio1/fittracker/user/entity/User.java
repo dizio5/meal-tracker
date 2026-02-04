@@ -1,5 +1,6 @@
 package com.dizio1.fittracker.user.entity;
 
+import com.dizio1.fittracker.userprofile.entity.UserProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +28,9 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserProfile profile;
 }
