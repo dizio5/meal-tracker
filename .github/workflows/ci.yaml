@@ -38,7 +38,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-          cache: maven sds
+          cache: maven
 
       - name: Build & Test
         run: ./mvnw -B -e clean test
