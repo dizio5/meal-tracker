@@ -14,22 +14,21 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_USER: facundo
+          POSTGRES_PASSWORD: 152233
           POSTGRES_DB: fit-tracker
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U ${{ secrets.DB_USERNAME }} -d postgres"
+          --health-cmd="pg_isready -U postgres -d postgres"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
 
     env:
       SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/fit-tracker
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      SECURITY_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
 
     steps:
       - uses: actions/checkout@v4
