@@ -49,4 +49,9 @@ public class User {
         foods.add(food);
         food.getUsers().add(this);
     }
+
+    public void removeFood(Food food) {
+        foods.remove(food);
+        food.getUsers().remove(this);
+    }
 }

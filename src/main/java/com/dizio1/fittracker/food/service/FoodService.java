@@ -8,6 +8,7 @@ import com.dizio1.fittracker.food.dto.FoodNutrients;
 import com.dizio1.fittracker.food.dto.FoodResponse;
 import com.dizio1.fittracker.food.dto.mapper.FoodMapper;
 import com.dizio1.fittracker.food.entity.Food;
+import com.dizio1.fittracker.food.exception.FoodNotFoundException;
 import com.dizio1.fittracker.nutrient.dto.mapper.NutrientMapper;
 import com.dizio1.fittracker.nutrient.entity.Nutrient;
 import com.dizio1.fittracker.nutrient.repository.NutrientRepository;
@@ -74,24 +75,29 @@ public class FoodService {
 
         FoodItem foodItem = searchFood(query).block();
         if (foodItem == null) {
-            throw new RuntimeException("No se encontro el alimento");
+            throw new FoodNotFoundException();
         }
 
+        boolean foodExists = foodRepo.existsById(foodItem.fdcId());
+
         Food food = foodRepo.findById(foodItem.fdcId())
-                .orElseGet(() -> foodMapper.toEntity(foodItem, user));
+                .orElseGet(() -> foodMapper.toEntity(foodItem));
 
         Food saved = foodRepo.save(food);
 
-        user.addFood(food);
+        user.addFood(saved);
         userRepo.save(user);
 
-        Set<Nutrient> nutrients = foodItem.foodNutrients()
-                .stream()
-                .map(foodNutrients -> nutrientMapper.toEntity(foodNutrients, saved))
-                .collect(Collectors.toSet());
+        if (!foodExists) {
+            Set<Nutrient> nutrients = foodItem.foodNutrients()
+                    .stream()
+                    .map(foodNutrients -> nutrientMapper.toEntity(foodNutrients, saved))
+                    .collect(Collectors.toSet());
 
-        nutrientRepo.saveAll(nutrients);
-        return foodMapper.toResponse(saved, nutrients);
+            nutrientRepo.saveAll(nutrients);
+        }
+
+        return foodMapper.toResponse(saved);
     }
 
     public List<FoodResponse> getFoods(String username) {
@@ -100,7 +106,21 @@ public class FoodService {
 
         return foodRepo.findAllByUsers_Id(user.getId())
                 .stream()
-                .map(food -> foodMapper.toResponse(food, food.getNutrients()))
+                .map(foodMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional
+    public FoodResponse removeFoodFromUser(String username, Long id) {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        Food food = foodRepo.findById(id)
+                .orElseThrow(FoodNotFoundException::new);
+
+        user.removeFood(food);
+        userRepo.save(user); // Siempre se guarda del lado del owning side (user en este caso)
+
+        return foodMapper.toResponse(food);
     }
 }

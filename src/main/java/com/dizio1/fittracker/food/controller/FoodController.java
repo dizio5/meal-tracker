@@ -36,4 +36,9 @@ public class FoodController {
     public List<FoodResponse> getFoods(@AuthenticationPrincipal Jwt jwt) {
         return foodService.getFoods(jwt.getSubject());
     }
+
+    @DeleteMapping("/delete/{id}")
+    public FoodResponse remove(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        return foodService.removeFoodFromUser(jwt.getSubject(), id);
+    }
 }

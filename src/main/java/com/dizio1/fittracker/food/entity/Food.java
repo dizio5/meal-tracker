@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class Food {
     @Id
     private Long id;
     private String description;
-    private Date publishedDate;
+    private LocalDate publishedDate;
 
     @ManyToMany(mappedBy = "foods")
     @JsonIgnore
@@ -27,9 +28,5 @@ public class Food {
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Nutrient> nutrients = new HashSet<>();
-
-    public void addUser(User user) {
-        users.add(user);
-    }
 }
 
