@@ -33,9 +33,9 @@ public class UserProfileService {
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         UserProfile userProfile = mapper.toEntity(user, request);
-        profileRepo.save(userProfile);
+        UserProfile saved = profileRepo.save(userProfile);
 
-        return mapper.toResponse(username, userProfile);
+        return mapper.toResponse(username, saved);
     }
 
     public ProfileResponse updateUserProfile(String username, ProfileRequest request) {
