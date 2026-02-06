@@ -1,8 +1,13 @@
 package com.dizio1.fittracker.user.entity;
 
+import com.dizio1.fittracker.food.entity.Food;
 import com.dizio1.fittracker.userprofile.entity.UserProfile;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,4 +35,18 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_foods",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "food_id"})
+    )
+    private Set<Food> foods = new HashSet<>();
+
+    public void addFood(Food food) {
+        foods.add(food);
+        food.getUsers().add(this);
+    }
 }
