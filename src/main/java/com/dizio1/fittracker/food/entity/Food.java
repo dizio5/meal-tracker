@@ -18,15 +18,16 @@ import java.util.*;
 public class Food {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
     private String description;
     private LocalDate publishedDate;
 
-    @ManyToMany(mappedBy = "foods")
-    @JsonIgnore
-    private Set<User> users = new HashSet<>();
-
-    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "food",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Nutrient> nutrients = new HashSet<>();
 }
 

@@ -17,7 +17,6 @@ public class FoodMapper {
 
     public Food toEntity(FoodItem item) {
        Food food = new Food();
-       food.setId(item.fdcId());
        food.setDescription(item.description());
        food.setPublishedDate(item.publishedDate());
        return food;

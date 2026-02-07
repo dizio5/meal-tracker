@@ -1,44 +1,36 @@
 package com.dizio1.fittracker.food.controller;
 
 import com.dizio1.fittracker.food.dto.FoodItem;
-import com.dizio1.fittracker.food.dto.FoodRequest;
-import com.dizio1.fittracker.food.dto.FoodResponse;
-import com.dizio1.fittracker.food.service.FoodService;
+import com.dizio1.fittracker.food.dto.FetchFoodRequest;
+import com.dizio1.fittracker.food.service.FetchFoodService;
+import com.dizio1.fittracker.foodentry.FoodEntryService;
+import com.dizio1.fittracker.foodentry.dto.AddFoodRequest;
+import com.dizio1.fittracker.foodentry.dto.AddFoodResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/foods")
 public class FoodController {
 
-    private final FoodService foodService;
+    private final FetchFoodService fetchFoodService;
+    private final FoodEntryService foodEntryService;
 
-    public FoodController(FoodService foodService) {
-        this.foodService = foodService;
+    public FoodController(FetchFoodService fetchFoodService, FoodEntryService foodEntryService) {
+        this.fetchFoodService = fetchFoodService;
+        this.foodEntryService = foodEntryService;
     }
 
     @PostMapping("/search")
-    public Mono<FoodItem> search(@Valid @RequestBody FoodRequest request) {
-        return foodService.searchFood(request.name());
+    public Mono<FoodItem> search(@Valid @RequestBody FetchFoodRequest request) {
+        return fetchFoodService.searchFood(request.name());
     }
 
     @PostMapping("/add")
-    public FoodResponse addFood(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody FoodRequest request) {
-        return foodService.addFood(jwt.getSubject(), request.name());
-    }
-
-    @GetMapping
-    public List<FoodResponse> getFoods(@AuthenticationPrincipal Jwt jwt) {
-        return foodService.getFoods(jwt.getSubject());
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public FoodResponse remove(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
-        return foodService.removeFoodFromUser(jwt.getSubject(), id);
+    public AddFoodResponse registerFood(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody AddFoodRequest request) {
+        return foodEntryService.registerFood(jwt.getSubject(), request);
     }
 }
