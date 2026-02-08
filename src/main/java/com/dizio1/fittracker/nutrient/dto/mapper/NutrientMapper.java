@@ -10,7 +10,6 @@ public class NutrientMapper {
 
     public Nutrient toEntity(FoodNutrients foodNutrients, Food food) {
         Nutrient nutrient = new Nutrient();
-        nutrient.setId(foodNutrients.nutrientId());
         nutrient.setName(foodNutrients.nutrientName());
         nutrient.setUnitName(foodNutrients.unitName());
         nutrient.setValue(foodNutrients.value());
