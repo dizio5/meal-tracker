@@ -1,15 +1,9 @@
 package com.dizio1.fittracker.user.entity;
 
-import com.dizio1.fittracker.food.entity.Food;
 import com.dizio1.fittracker.foodentry.entity.FoodEntry;
-import com.dizio1.fittracker.userprofile.entity.UserProfile;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

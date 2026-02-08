@@ -92,7 +92,7 @@ public class FoodEntryService {
 
         return foodentries
                 .stream()
-                .map(foodEntry -> foodEntryMapper.toFoodEntryResponse(foodEntry))
+                .map(foodEntryMapper::toFoodEntryResponse)
                 .toList();
     }
 }
