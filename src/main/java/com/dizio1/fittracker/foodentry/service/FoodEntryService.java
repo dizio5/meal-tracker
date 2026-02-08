@@ -1,4 +1,4 @@
-package com.dizio1.fittracker.foodentry;
+package com.dizio1.fittracker.foodentry.service;
 
 import com.dizio1.fittracker.common.exception.UserNotFoundException;
 import com.dizio1.fittracker.food.FoodRepository;
@@ -10,14 +10,18 @@ import com.dizio1.fittracker.food.exception.FoodNotFoundException;
 import com.dizio1.fittracker.food.service.FetchFoodService;
 import com.dizio1.fittracker.foodentry.dto.AddFoodRequest;
 import com.dizio1.fittracker.foodentry.dto.AddFoodResponse;
+import com.dizio1.fittracker.foodentry.dto.FoodEntryResponse;
 import com.dizio1.fittracker.foodentry.dto.mapper.FoodEntryMapper;
 import com.dizio1.fittracker.foodentry.entity.FoodEntry;
+import com.dizio1.fittracker.foodentry.repository.FoodEntryRepository;
 import com.dizio1.fittracker.nutrient.dto.mapper.NutrientMapper;
 import com.dizio1.fittracker.nutrient.entity.Nutrient;
 import com.dizio1.fittracker.user.entity.User;
 import com.dizio1.fittracker.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,19 +34,22 @@ public class FoodEntryService {
     private final NutrientMapper nutrientMapper;
     private final FoodEntryMapper foodEntryMapper;
     private final FoodRepository foodRepo;
+    private final FoodEntryRepository foodEntryRepo;
 
     public FoodEntryService(FetchFoodService fetchFoodService,
                             UserRepository userRepository,
                             FoodMapper foodMapper,
                             NutrientMapper nutrientMapper,
                             FoodEntryMapper foodEntryMapper,
-                            FoodRepository foodRepo) {
+                            FoodRepository foodRepo,
+                            FoodEntryRepository foodEntryRepo) {
         this.fetchFoodService = fetchFoodService;
         this.userRepository = userRepository;
         this.foodMapper = foodMapper;
         this.nutrientMapper = nutrientMapper;
         this.foodEntryMapper = foodEntryMapper;
         this.foodRepo = foodRepo;
+        this.foodEntryRepo = foodEntryRepo;
     }
 
     @Transactional
@@ -74,6 +81,18 @@ public class FoodEntryService {
         user.addFoodEntry(foodEntry);
         userRepository.save(user);
 
-        return foodEntryMapper.toResponse(foodEntry, foodResponse);
+        return foodEntryMapper.toAddFoodResponse(foodEntry, foodResponse);
+    }
+
+    public List<FoodEntryResponse> getAllFoodFromUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        List<FoodEntry> foodentries = foodEntryRepo.findAllByUserId(user.getId());
+
+        return foodentries
+                .stream()
+                .map(foodEntryMapper::toFoodEntryResponse)
+                .toList();
     }
 }

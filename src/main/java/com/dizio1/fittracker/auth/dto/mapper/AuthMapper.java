@@ -1,7 +1,6 @@
 package com.dizio1.fittracker.auth.dto.mapper;
 
 import com.dizio1.fittracker.auth.dto.AuthResponse;
-import com.dizio1.fittracker.user.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
