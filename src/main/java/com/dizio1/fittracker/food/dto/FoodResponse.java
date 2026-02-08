@@ -7,7 +7,7 @@ import java.util.Set;
 
 public record FoodResponse(
         String description,
-        LocalDate date,
+        LocalDate publishedDate,
         Set<Nutrient> nutrients
 ) {
 }
