@@ -3,7 +3,7 @@ package com.dizio1.fittracker.food.controller;
 import com.dizio1.fittracker.food.dto.FoodItem;
 import com.dizio1.fittracker.food.dto.FetchFoodRequest;
 import com.dizio1.fittracker.food.service.FetchFoodService;
-import com.dizio1.fittracker.foodentry.FoodEntryService;
+import com.dizio1.fittracker.foodentry.service.FoodEntryService;
 import com.dizio1.fittracker.foodentry.dto.AddFoodRequest;
 import com.dizio1.fittracker.foodentry.dto.AddFoodResponse;
 import com.dizio1.fittracker.foodentry.dto.FoodEntryResponse;

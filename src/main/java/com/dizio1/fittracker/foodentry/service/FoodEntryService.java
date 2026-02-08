@@ -1,4 +1,4 @@
-package com.dizio1.fittracker.foodentry;
+package com.dizio1.fittracker.foodentry.service;
 
 import com.dizio1.fittracker.common.exception.UserNotFoundException;
 import com.dizio1.fittracker.food.FoodRepository;
