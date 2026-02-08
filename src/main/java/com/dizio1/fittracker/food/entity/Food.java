@@ -1,8 +1,6 @@
 package com.dizio1.fittracker.food.entity;
 
 import com.dizio1.fittracker.nutrient.entity.Nutrient;
-import com.dizio1.fittracker.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +19,8 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
+
+    @Column(unique = true)
     private String description;
     private LocalDate publishedDate;
 

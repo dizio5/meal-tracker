@@ -50,29 +50,27 @@ public class FoodEntryService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        boolean exists = foodRepo.existsByDescription(request.name());
-        FoodItem foodItem = fetchFoodService.searchFood(request.name()).block();
+        Food food = foodRepo.findByDescriptionIgnoreCase(request.name())
+                .orElseGet(() -> {
+                    FoodItem foodItem = fetchFoodService.searchFood(request.name()).block();
+                    if (foodItem == null) {
+                        throw new FoodNotFoundException();
+                    }
 
-        if (foodItem == null) {
-            throw new FoodNotFoundException();
-        }
+                    Food foodTemp = foodMapper.toEntity(foodItem);
+                    Set<Nutrient> nutrients = foodItem.foodNutrients()
+                            .stream()
+                            .map(foodNutrient -> nutrientMapper.toEntity(foodNutrient, foodTemp))
+                            .collect(Collectors.toSet());
 
-        Food food = foodMapper.toEntity(foodItem);
+                    foodTemp.getNutrients().addAll(nutrients);
 
-        Set<Nutrient> nutrients = foodItem.foodNutrients()
-                .stream()
-                .map(foodNutrient -> nutrientMapper.toEntity(foodNutrient, food))
-                .collect(Collectors.toSet());
-
-        food.getNutrients().addAll(nutrients);
-
-        if(!exists) {
-            foodRepo.save(food);
-        }
+                    return foodRepo.save(foodTemp);
+                });
 
         FoodResponse foodResponse = foodMapper.toResponse(food);
-
         FoodEntry foodEntry = foodEntryMapper.toEntity(request.quantity(), user, food);
+
         user.addFoodEntry(foodEntry);
         userRepository.save(user);
 
