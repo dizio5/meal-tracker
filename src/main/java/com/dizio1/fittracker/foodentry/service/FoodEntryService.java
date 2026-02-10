@@ -18,6 +18,7 @@ import com.dizio1.fittracker.nutrient.dto.mapper.NutrientMapper;
 import com.dizio1.fittracker.nutrient.entity.Nutrient;
 import com.dizio1.fittracker.user.entity.User;
 import com.dizio1.fittracker.user.repository.UserRepository;
+import org.springframework.cache.annotation.Cacheable;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -84,6 +85,7 @@ public class FoodEntryService {
         return foodEntryMapper.toAddFoodResponse(foodEntry, foodResponse);
     }
 
+    @Cacheable(cacheNames = "user-food-entry", key = "#username.trim().toLowerCase()")
     public List<FoodEntryResponse> getAllFoodFromUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
