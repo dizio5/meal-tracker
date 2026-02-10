@@ -17,6 +17,7 @@ public class FoodClient {
         this.props = props;
     }
 
+
     public Mono<FoodSearchResponse> searchFood(String query, int pageSize, int pageNumber) {
         return client.get()
                 .uri(uriBuilder -> uriBuilder
