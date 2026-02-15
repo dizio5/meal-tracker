@@ -19,9 +19,11 @@ import com.dizio1.fittracker.nutrient.entity.Nutrient;
 import com.dizio1.fittracker.user.entity.User;
 import com.dizio1.fittracker.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -84,15 +86,11 @@ public class FoodEntryService {
         return foodEntryMapper.toAddFoodResponse(foodEntry, foodResponse);
     }
 
-    public List<FoodEntryResponse> getAllFoodFromUser(String username) {
+    public Page<FoodEntryResponse> getAllFoodFromUser(String username, @PageableDefault() Pageable pageable) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        List<FoodEntry> foodentries = foodEntryRepo.findAllByUserId(user.getId());
-
-        return foodentries
-                .stream()
-                .map(foodEntryMapper::toFoodEntryResponse)
-                .toList();
+        return foodEntryRepo.findAllByUserId(user.getId(), pageable)
+                .map(foodEntryMapper::toFoodEntryResponse);
     }
 }
