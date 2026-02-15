@@ -10,6 +10,8 @@ import com.dizio1.fittracker.foodentry.dto.FoodEntryResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +35,18 @@ public class FoodController {
     }
 
     @PostMapping("/add")
-    public AddFoodResponse registerFood(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody AddFoodRequest request) {
+    public AddFoodResponse registerFood(@AuthenticationPrincipal Jwt jwt,
+                                        @Valid @RequestBody AddFoodRequest request) {
         return foodEntryService.registerFood(jwt.getSubject(), request);
     }
 
     @GetMapping
-    public Page<FoodEntryResponse> getAllFoodFromUser(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+    public Page<FoodEntryResponse> getAllFoodFromUser(@AuthenticationPrincipal Jwt jwt,
+                                                      @PageableDefault(
+                                                              size = 20,
+                                                              sort = "consumedAt",
+                                                              direction = Sort.Direction.DESC
+                                                      ) Pageable pageable) {
         return foodEntryService.getAllFoodFromUser(jwt.getSubject(), pageable);
     }
 }
