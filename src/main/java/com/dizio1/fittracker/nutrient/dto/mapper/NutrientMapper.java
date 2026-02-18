@@ -16,4 +16,8 @@ public class NutrientMapper {
         nutrient.setFood(food);
         return nutrient;
     }
+
+    public NutrientResponse toResponse(Nutrient nutrient) {
+        return new NutrientResponse(nutrient.getName(), nutrient.getUnitName(), nutrient.getValue());
+    }
 }

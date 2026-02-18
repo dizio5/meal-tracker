@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface FoodEntryRepository extends JpaRepository<FoodEntry, Long> {
@@ -26,4 +27,12 @@ public interface FoodEntryRepository extends JpaRepository<FoodEntry, Long> {
                 AND f.consumedAt BETWEEN :start AND :end
             """)
     Page<FoodEntry> findAllByUserIdAndDate(Long id, LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    @Query("""
+            SELECT f
+            FROM FoodEntry f
+            WHERE f.user.id = :id
+                AND f.consumedAt BETWEEN :start AND :end
+            """)
+    List<FoodEntry> getListByUserIdAndDate(Long id, LocalDateTime start, LocalDateTime end, Pageable pageable);
 }

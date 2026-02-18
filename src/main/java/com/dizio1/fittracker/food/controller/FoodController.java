@@ -7,6 +7,8 @@ import com.dizio1.fittracker.foodentry.service.FoodEntryService;
 import com.dizio1.fittracker.foodentry.dto.AddFoodRequest;
 import com.dizio1.fittracker.foodentry.dto.AddFoodResponse;
 import com.dizio1.fittracker.foodentry.dto.FoodEntryResponse;
+import com.dizio1.fittracker.foodentry.service.RegisterEntryService;
+import com.dizio1.fittracker.nutrient.dto.mapper.NutrientResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/foods")
@@ -25,10 +28,14 @@ public class FoodController {
 
     private final FetchFoodService fetchFoodService;
     private final FoodEntryService foodEntryService;
+    private final RegisterEntryService registerEntryService;
 
-    public FoodController(FetchFoodService fetchFoodService, FoodEntryService foodEntryService) {
+    public FoodController(FetchFoodService fetchFoodService,
+                          FoodEntryService foodEntryService,
+                          RegisterEntryService registerEntryService) {
         this.fetchFoodService = fetchFoodService;
         this.foodEntryService = foodEntryService;
+        this.registerEntryService = registerEntryService;
     }
 
     @PostMapping("/search")
@@ -39,7 +46,7 @@ public class FoodController {
     @PostMapping("/add")
     public AddFoodResponse registerFood(@AuthenticationPrincipal Jwt jwt,
                                         @Valid @RequestBody AddFoodRequest request) {
-        return foodEntryService.registerFood(jwt.getSubject(), request);
+        return registerEntryService.registerFood(jwt.getSubject(), request);
     }
 
     @GetMapping
@@ -49,7 +56,7 @@ public class FoodController {
                                                               sort = "consumedAt",
                                                               direction = Sort.Direction.DESC
                                                       ) Pageable pageable) {
-        return foodEntryService.getAllFoodFromUser(jwt.getSubject(), pageable);
+        return foodEntryService.getAllEntriesFromUser(jwt.getSubject(), pageable);
     }
 
     @GetMapping("/{date}")
@@ -57,5 +64,12 @@ public class FoodController {
                                                       @PageableDefault() Pageable pageable,
                                                       @PathVariable LocalDate date) {
         return foodEntryService.getEntriesFromDate(jwt.getSubject(), date, pageable);
+    }
+
+    @GetMapping("/nutrients/{date}")
+    public List<NutrientResponse> getAllNutrientsFromDate(@AuthenticationPrincipal Jwt jwt,
+                                                          @PageableDefault() Pageable pageable,
+                                                          @PathVariable LocalDate date) {
+        return foodEntryService.getNutrientsFromDate(jwt.getSubject(), date, pageable);
     }
 }
