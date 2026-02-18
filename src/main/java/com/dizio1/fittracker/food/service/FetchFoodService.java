@@ -3,7 +3,6 @@ package com.dizio1.fittracker.food.service;
 import com.dizio1.fittracker.food.client.FoodClient;
 import com.dizio1.fittracker.food.dto.FoodItem;
 import com.dizio1.fittracker.food.dto.FoodNutrients;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import java.util.List;
@@ -17,7 +16,6 @@ public class FetchFoodService {
         this.foodClient = foodClient;
     }
 
-    @Cacheable(cacheNames = "usda-food-search", key = "#query.toLowerCase()")
     public Mono<FoodItem> searchFood(String query) {
         return foodClient.searchFood(query, 1, 1)
                 .flatMap(resp -> {

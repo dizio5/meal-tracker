@@ -23,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,7 +60,7 @@ public class FoodEntryService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        Food food = foodRepo.findByDescriptionIgnoreCase(request.name())
+        Food food = foodRepo.findByDescription(request.name())
                 .orElseGet(() -> {
                     FoodItem foodItem = fetchFoodService.searchFood(request.name()).block();
                     if (foodItem == null) {
@@ -90,6 +92,17 @@ public class FoodEntryService {
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         return foodEntryRepo.findAllByUserId(user.getId(), pageable)
+                .map(foodEntryMapper::toFoodEntryResponse);
+    }
+
+    public Page<FoodEntryResponse> getEntriesFromDate(String username, LocalDate date, Pageable pageable) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atStartOfDay().plusDays(1);
+
+        return foodEntryRepo.findAllByUserIdAndDate(user.getId(), start, end, pageable)
                 .map(foodEntryMapper::toFoodEntryResponse);
     }
 }

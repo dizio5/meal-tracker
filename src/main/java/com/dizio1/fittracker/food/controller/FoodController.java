@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/v1/foods")
 public class FoodController {
@@ -48,5 +50,12 @@ public class FoodController {
                                                               direction = Sort.Direction.DESC
                                                       ) Pageable pageable) {
         return foodEntryService.getAllFoodFromUser(jwt.getSubject(), pageable);
+    }
+
+    @GetMapping("/{date}")
+    public Page<FoodEntryResponse> getAllFoodFromDate(@AuthenticationPrincipal Jwt jwt,
+                                                      @PageableDefault() Pageable pageable,
+                                                      @PathVariable LocalDate date) {
+        return foodEntryService.getEntriesFromDate(jwt.getSubject(), date, pageable);
     }
 }
