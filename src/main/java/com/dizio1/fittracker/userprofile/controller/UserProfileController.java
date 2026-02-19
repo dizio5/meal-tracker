@@ -3,6 +3,7 @@ package com.dizio1.fittracker.userprofile.controller;
 import com.dizio1.fittracker.userprofile.dto.ProfileRequest;
 import com.dizio1.fittracker.userprofile.dto.ProfileResponse;
 import com.dizio1.fittracker.userprofile.service.UserProfileService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class UserProfileController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ProfileResponse createUserProfile(
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody ProfileRequest request) {
