@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,7 @@ public class FoodController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public AddFoodResponse registerFood(@AuthenticationPrincipal Jwt jwt,
                                         @Valid @RequestBody AddFoodRequest request) {
         return registerEntryService.registerFood(jwt.getSubject(), request);
