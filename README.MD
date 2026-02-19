@@ -156,8 +156,6 @@ Layered architecture: Controller → Service → Repository → Database
 
 - Protected endpoints
 
-blob:https://web.whatsapp.com/75d67033-a6a6-4925-ab7e-8c8d49afa0f0
-
 ## 🛠 Technologies
 
 - Java 21
