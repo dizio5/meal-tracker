@@ -39,6 +39,7 @@ GET `/foods/search?name=chicken`
     "carbohydrates": 0
   }
 ]
+```
 
 ### Register Consumed Food
 
@@ -48,10 +49,12 @@ Endpoint: POST /entries
 
 Request Body
 
+```json
 {
   "foodName": "Apple",
   "quantity": 2,
 }
+```
 
 The system:
 
@@ -83,6 +86,7 @@ Supports pagination
 
 Example Response
 
+```json
 {
   "content": [
     {
@@ -95,6 +99,7 @@ Example Response
   "size": 10,
   "totalElements": 1
 }
+```
 
 ### Get Total Nutrients for a Day
 
@@ -114,6 +119,7 @@ Sum total values
 
 Example Response
 
+```json
 [
   {
     "name": "Protein",
@@ -126,6 +132,7 @@ Example Response
     "totalValue": 85.0
   }
 ]
+```
 
 ## Architecture
 
@@ -189,7 +196,7 @@ docker compose up --build
 
 Make sure environment variables are defined in .env file or Docker Compose environment section
 
-##🧪 Testing
+## 🧪 Testing
 
 - Unit tests with JUnit and Mockito
 
